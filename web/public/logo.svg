@@ -1,0 +1,18 @@
+<svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="120" height="120" rx="28" fill="#FFC83D"/>
+  <!-- ears -->
+  <path d="M30 38 L24 18 L46 30 Z" fill="#FF8C69" stroke="#3B2F2F" stroke-width="4" stroke-linejoin="round"/>
+  <path d="M90 38 L96 18 L74 30 Z" fill="#FF8C69" stroke="#3B2F2F" stroke-width="4" stroke-linejoin="round"/>
+  <!-- face -->
+  <circle cx="60" cy="64" r="34" fill="#FFE4CC" stroke="#3B2F2F" stroke-width="4"/>
+  <!-- eyes -->
+  <circle cx="48" cy="58" r="5" fill="#3B2F2F"/>
+  <circle cx="72" cy="58" r="5" fill="#3B2F2F"/>
+  <!-- snout -->
+  <ellipse cx="60" cy="76" rx="13" ry="10" fill="#FFF7ED" stroke="#3B2F2F" stroke-width="3"/>
+  <ellipse cx="60" cy="72" rx="4.5" ry="3.5" fill="#3B2F2F"/>
+  <path d="M60 75 V82" stroke="#3B2F2F" stroke-width="3" stroke-linecap="round"/>
+  <!-- cheeks -->
+  <circle cx="40" cy="70" r="4" fill="#FF6FB5" opacity="0.7"/>
+  <circle cx="80" cy="70" r="4" fill="#FF6FB5" opacity="0.7"/>
+</svg>

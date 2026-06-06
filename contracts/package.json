@@ -1,0 +1,20 @@
+{
+  "name": "barkpad-contracts",
+  "version": "0.1.0",
+  "description": "Barkpad meme launchpad smart contracts on OPN Chain",
+  "license": "MIT",
+  "scripts": {
+    "compile": "hardhat compile",
+    "test": "hardhat test",
+    "coverage": "hardhat coverage",
+    "deploy:testnet": "hardhat run scripts/deploy.ts --network opnTestnet",
+    "smoke:testnet": "hardhat run scripts/smoke.ts --network opnTestnet"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "@openzeppelin/contracts": "^5.1.0",
+    "dotenv": "^16.4.5",
+    "hardhat": "^2.22.10",
+    "typescript": "^5.5.4"
+  }
+}

@@ -1,0 +1,31 @@
+# Secrets — NEVER commit these
+.env
+**/.env
+*.env.local
+**/*.env.local
+
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Build / cache artifacts
+**/.next/
+**/dist/
+**/out/
+**/cache/
+**/artifacts/
+**/typechain-types/
+**/coverage/
+coverage.json
+*.tsbuildinfo
+**/next-env.d.ts
+
+# Indexer local DB
+**/*.db
+**/*.db-shm
+**/*.db-wal
+
+# Logs / misc
+*.log
+deploy.log
+.DS_Store
