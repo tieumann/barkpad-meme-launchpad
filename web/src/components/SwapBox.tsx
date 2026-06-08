@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { formatEther, parseEther } from "viem";
-import { useReadContracts, useWriteContract } from "wagmi";
+import { useReadContracts, useWriteContract, useAccount } from "wagmi";
 import { ammPairAbi, erc20Abi } from "@/lib/abis";
 import { TxStatus } from "@/components/TxButton";
 
@@ -23,8 +23,10 @@ export function SwapBox({
   symbol: string;
 }) {
   const { writeContract, data: hash, error, isPending } = useWriteContract();
-  const [dir, setDir] = useState<"buy" | "sell">("buy"); // buy = OPN->token
+  const { address: me } = useAccount();
+  const [dir, setDir] = useState<"buy" | "sell" | "addlq">("buy"); // buy = OPN->token
   const [amount, setAmount] = useState("0.1");
+  const [lqToken, setLqToken] = useState("1000");
 
   const { data, refetch } = useReadContracts({
     contracts: [
@@ -72,6 +74,31 @@ export function SwapBox({
     );
   }
 
+  // Add liquidity: approve token, then send token + OPN to mint LP.
+  const lqTokenWei = (() => {
+    try {
+      return parseEther(lqToken || "0");
+    } catch {
+      return 0n;
+    }
+  })();
+
+  function approveLq() {
+    writeContract({ address: token, abi: erc20Abi, functionName: "approve", args: [pool, lqTokenWei] });
+  }
+  function addLiquidity(recipient: `0x${string}`) {
+    writeContract(
+      {
+        address: pool,
+        abi: ammPairAbi,
+        functionName: "addLiquidity",
+        value: amtWei,
+        args: [lqTokenWei, recipient],
+      },
+      { onSuccess: () => setTimeout(() => refetch(), 2500) }
+    );
+  }
+
   return (
     <div className="card-cute p-6">
       <h3 className="font-display text-xl font-extrabold">🔄 Swap (DEX pool)</h3>
@@ -96,31 +123,65 @@ export function SwapBox({
         >
           {symbol} → OPN
         </button>
+        <button
+          onClick={() => setDir("addlq")}
+          className={`flex-1 rounded-full py-2 font-display font-extrabold ${
+            dir === "addlq" ? "bg-bark-grape/40" : "text-bark-ink/60"
+          }`}
+        >
+          + LQ
+        </button>
       </div>
 
-      <label className="mb-1 mt-4 block font-display font-bold">
-        {dir === "buy" ? "OPN to spend" : `${symbol} to sell`}
-      </label>
-      <input className="input-cute" value={amount} onChange={(e) => setAmount(e.target.value)} />
+      {dir !== "addlq" ? (
+        <>
+          <label className="mb-1 mt-4 block font-display font-bold">
+            {dir === "buy" ? "OPN to spend" : `${symbol} to sell`}
+          </label>
+          <input className="input-cute" value={amount} onChange={(e) => setAmount(e.target.value)} />
 
-      <p className="mt-2 rounded-2xl bg-bark-honey/40 px-3 py-2 font-semibold">
-        ≈ {Number(formatEther(out)).toLocaleString(undefined, { maximumFractionDigits: 4 })}{" "}
-        {dir === "buy" ? symbol : "OPN"}
-      </p>
+          <p className="mt-2 rounded-2xl bg-bark-honey/40 px-3 py-2 font-semibold">
+            ≈ {Number(formatEther(out)).toLocaleString(undefined, { maximumFractionDigits: 4 })}{" "}
+            {dir === "buy" ? symbol : "OPN"}
+          </p>
 
-      {dir === "buy" ? (
-        <button className="btn-pop mt-3 w-full bg-bark-mint text-bark-ink" onClick={swap} disabled={isPending}>
-          🔄 Swap to {symbol}
-        </button>
+          {dir === "buy" ? (
+            <button className="btn-pop mt-3 w-full bg-bark-mint text-bark-ink" onClick={swap} disabled={isPending}>
+              🔄 Swap to {symbol}
+            </button>
+          ) : (
+            <div className="mt-3 space-y-2">
+              <button className="btn-ghost w-full" onClick={swap} disabled={isPending}>
+                1️⃣ Approve {symbol}
+              </button>
+              <button className="btn-coral w-full" onClick={swapSellExec} disabled={isPending}>
+                2️⃣ Swap to OPN
+              </button>
+            </div>
+          )}
+        </>
       ) : (
-        <div className="mt-3 space-y-2">
-          <button className="btn-ghost w-full" onClick={swap} disabled={isPending}>
-            1️⃣ Approve {symbol}
-          </button>
-          <button className="btn-coral w-full" onClick={swapSellExec} disabled={isPending}>
-            2️⃣ Swap to OPN
-          </button>
-        </div>
+        <>
+          <p className="mt-4 rounded-2xl bg-bark-grape/20 px-3 py-2 text-sm font-semibold">
+            🦴 Provide liquidity to earn from swap fees. Add OPN + {symbol} in proportion to the pool.
+          </p>
+          <label className="mb-1 mt-3 block font-display font-bold">OPN amount</label>
+          <input className="input-cute" value={amount} onChange={(e) => setAmount(e.target.value)} />
+          <label className="mb-1 mt-3 block font-display font-bold">{symbol} amount</label>
+          <input className="input-cute" value={lqToken} onChange={(e) => setLqToken(e.target.value)} />
+          <div className="mt-3 space-y-2">
+            <button className="btn-ghost w-full" onClick={approveLq} disabled={isPending}>
+              1️⃣ Approve {symbol}
+            </button>
+            <button
+              className="btn-pop w-full bg-bark-grape text-white"
+              onClick={() => me && addLiquidity(me)}
+              disabled={!me || isPending}
+            >
+              2️⃣ Add liquidity
+            </button>
+          </div>
+        </>
       )}
 
       <TxStatus hash={hash} error={error} />

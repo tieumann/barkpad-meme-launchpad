@@ -357,4 +357,21 @@ export const ammPairAbi = [
   },
   { type: "function", name: "reserveToken", stateMutability: "view", inputs: [], outputs: [{ type: "uint256" }] },
   { type: "function", name: "reserveOPN", stateMutability: "view", inputs: [], outputs: [{ type: "uint256" }] },
+  {
+    type: "function",
+    name: "addLiquidity",
+    stateMutability: "payable",
+    inputs: [
+      { name: "tokenAmount", type: "uint256" },
+      { name: "lpRecipient", type: "address" },
+    ],
+    outputs: [{ name: "lp", type: "uint256" }],
+  },
+  {
+    type: "function",
+    name: "balanceOf",
+    stateMutability: "view",
+    inputs: [{ name: "", type: "address" }],
+    outputs: [{ type: "uint256" }],
+  },
 ] as const;
