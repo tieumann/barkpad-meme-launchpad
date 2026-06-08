@@ -106,20 +106,20 @@ async function main() {
     const curve = await ethers.getContractAt("BondingCurve", curveAddr);
     const token = await ethers.getContractAt("MemeToken", tokenAddr);
 
-    await (await curve.buy(0, { value: ethers.parseEther("1") })).wait();
+    await (await curve.buy(0, { value: ethers.parseEther("1"), gasLimit: 500000 })).wait();
     const bal = await token.balanceOf(me.address);
     console.log(`    Bought ${ethers.formatEther(bal)} FCDOGE`);
 
     const half = (bal / 2n / ethers.parseEther("1")) * ethers.parseEther("1");
     if (half > 0n) {
-      await (await token.approve(curveAddr, half)).wait();
-      await (await curve.sell(half, 0)).wait();
+      await (await token.approve(curveAddr, half, { gasLimit: 100000 })).wait();
+      await (await curve.sell(half, 0, { gasLimit: 500000 })).wait();
       console.log(`    Sold ${ethers.formatEther(half)} back`);
     }
 
     for (let i = 0; i < 6; i++) {
       if ((await curve.status()) !== 0n) break;
-      await (await curve.buy(0, { value: ethers.parseEther("1") })).wait();
+      await (await curve.buy(0, { value: ethers.parseEther("1"), gasLimit: 500000 })).wait();
     }
     if ((await curve.status()) === 1n) {
       await (await curve.graduate({ gasLimit: 6_000_000 })).wait();
@@ -135,13 +135,43 @@ async function main() {
     fail.push("1. Launchpad");
   }
 
-  // --- 2. Swap on graduated pool ---
+  // --- 2. Swap on graduated pool (both directions) + Add Liquidity ---
   try {
     if (graduatedPool && graduatedPool !== ethers.ZeroAddress) {
       const pair = await ethers.getContractAt("SimpleAMMPair", graduatedPool);
-      await (await pair.swapOPNForToken(0, { value: ethers.parseEther("0.1") })).wait();
-      console.log(`[2] Swapped OPN -> token on graduated pool`);
-      ok.push("2. Swap (post-graduation DEX)");
+      const token = await ethers.getContractAt("MemeToken", await pair.token());
+
+      // OPN -> token
+      await (await pair.swapOPNForToken(0, { value: ethers.parseEther("0.1"), gasLimit: 300000 })).wait();
+      console.log(`[2] Swapped OPN -> token`);
+
+      // token -> OPN (approve then swap a small amount)
+      const bal = await token.balanceOf(me.address);
+      const sellAmt = bal / 4n;
+      if (sellAmt > 0n) {
+        await (await token.approve(graduatedPool, sellAmt, { gasLimit: 100000 })).wait();
+        await (await pair.swapTokenForOPN(sellAmt, 0, { gasLimit: 300000 })).wait();
+        console.log(`[2] Swapped token -> OPN`);
+      }
+      ok.push("2. Swap both directions (post-graduation DEX)");
+
+      // Add liquidity: provide OPN + token, receive LP.
+      try {
+        const lpToken = bal / 4n;
+        if (lpToken > 0n) {
+          await (await token.approve(graduatedPool, lpToken, { gasLimit: 100000 })).wait();
+          const lpBefore = await pair.balanceOf(me.address);
+          await (
+            await pair.addLiquidity(lpToken, me.address, { value: ethers.parseEther("0.05"), gasLimit: 400000 })
+          ).wait();
+          const lpAfter = await pair.balanceOf(me.address);
+          console.log(`[2b] Added liquidity, LP minted: ${ethers.formatEther(lpAfter - lpBefore)}`);
+          ok.push("2b. Add liquidity (LP minted)");
+        }
+      } catch (e: any) {
+        console.log(`[2b] Add liquidity FAIL: ${e.message}`);
+        fail.push("2b. Add liquidity");
+      }
     } else {
       fail.push("2. Swap (no pool)");
     }
