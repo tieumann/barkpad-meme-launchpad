@@ -37,7 +37,7 @@ export default function ExplorePage() {
   });
 
   const addrs = (tokenAddrs ?? [])
-    .map((r) => (r.status === "success" ? (r.result as `0x${string}`) : null))
+    .map((r) => (r.status === "success" ? (r.result as unknown as `0x${string}`) : null))
     .filter(Boolean) as `0x${string}`[];
 
   return (
@@ -131,7 +131,7 @@ function TokenCard({ token }: { token: `0x${string}` }) {
         ]
       : [],
     query: { enabled: !!curve },
-  });
+  } as any);
 
   const name = meta?.[0]?.result as string | undefined;
   const symbol = meta?.[1]?.result as string | undefined;

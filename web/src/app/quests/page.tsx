@@ -29,7 +29,7 @@ export default function QuestsPage() {
             { address: quest, abi: questAbi, functionName: "claimed", args: [me] } as const,
           ]
         : []),
-    ],
+    ] as any,
   });
 
   const conversionOpen = (data?.[0]?.result as boolean) ?? false;

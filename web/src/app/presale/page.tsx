@@ -23,7 +23,7 @@ export default function PresalePage() {
       { address: presale, abi: presaleAbi, functionName: "softCap" },
       { address: presale, abi: presaleAbi, functionName: "rate" },
       ...(me ? [{ address: presale, abi: presaleAbi, functionName: "contributed", args: [me] } as const] : []),
-    ],
+    ] as any,
   });
 
   const live = (data?.[0]?.result as boolean) ?? false;

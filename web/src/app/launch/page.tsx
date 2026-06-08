@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { parseEther, encodeBytes32String } from "viem";
+import { parseEther, stringToHex } from "viem";
 import { useAccount, useWriteContract } from "wagmi";
 import { NetworkGuard } from "@/components/NetworkGuard";
 import { TxStatus } from "@/components/TxButton";
@@ -33,7 +33,7 @@ export default function LaunchPage() {
           name: `${emoji} ${name}`.slice(0, 32),
           symbol: symbol.toUpperCase().slice(0, 10),
           totalSupply: parseEther(supply || "1000000"),
-          metadataId: encodeBytes32String(desc.slice(0, 31) || "meme"),
+          metadataId: stringToHex(desc.slice(0, 31) || "meme", { size: 32 }),
           basePrice: parseEther("0.0001"),
           slope: parseEther("0.0000001"),
           graduationCap: parseEther("5"),

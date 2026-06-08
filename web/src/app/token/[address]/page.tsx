@@ -35,7 +35,7 @@ export default function TokenPage() {
       { address: token, abi: erc20Abi, functionName: "name" },
       { address: token, abi: erc20Abi, functionName: "symbol" },
       ...(me ? [{ address: token, abi: erc20Abi, functionName: "balanceOf", args: [me] } as const] : []),
-    ],
+    ] as any,
   });
 
   const { data: curveData, refetch } = useReadContracts({
@@ -49,7 +49,7 @@ export default function TokenPage() {
         ]
       : [],
     query: { enabled: !!curve },
-  });
+  } as any);
 
   const name = meta?.[0]?.result as string | undefined;
   const symbol = meta?.[1]?.result as string | undefined;

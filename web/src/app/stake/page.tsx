@@ -13,7 +13,7 @@ export default function StakePage() {
   const { writeContract, data: hash, error, isPending } = useWriteContract();
 
   const [pool, setPool] = useState("");
-  const [stakeToken, setStakeToken] = useState(ADDRESSES.DogOn);
+  const [stakeToken, setStakeToken] = useState<string>(ADDRESSES.DogOn);
   const [amount, setAmount] = useState("100");
 
   const poolValid = isAddress(pool);
@@ -32,7 +32,7 @@ export default function StakePage() {
         ]
       : [],
     query: { enabled: poolValid },
-  });
+  } as any);
 
   const totalStaked = (data?.[0]?.result as bigint) ?? 0n;
   const myStake = (data?.[2]?.result as bigint) ?? 0n;
