@@ -4,9 +4,22 @@ import { Providers } from "./providers";
 import { NavBar } from "@/components/NavBar";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://barkpad-meme-launchpad.vercel.app"),
   title: "Barkpad 🐶 — Meme Launchpad on OPN Chain",
   description:
     "Launch, trade, and grow cute meme tokens on OPN Chain. Fair bonding-curve launches, anti-rug locks, staking, airdrops, and quests.",
+  openGraph: {
+    title: "Barkpad 🐶 — Meme Launchpad on OPN Chain",
+    description:
+      "The cutest, safest meme launchpad on OPN Chain. Fair launch, anti-rug, swap, stake, airdrop, quests.",
+    type: "website",
+    url: "https://barkpad-meme-launchpad.vercel.app",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Barkpad 🐶 — Meme Launchpad on OPN Chain",
+    description: "The cutest, safest meme launchpad on OPN Chain. Much safe, very launch.",
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
