@@ -28,6 +28,26 @@ const config: HardhatUserConfig = {
   gasReporter: {
     enabled: process.env.REPORT_GAS === "true",
   },
+  // OPN testnet runs a Blockscout explorer at https://testnet.iopn.tech.
+  // Blockscout accepts any non-empty apiKey.
+  etherscan: {
+    apiKey: {
+      opnTestnet: "blockscout",
+    },
+    customChains: [
+      {
+        network: "opnTestnet",
+        chainId: 984,
+        urls: {
+          apiURL: "https://testnet.iopn.tech/api",
+          browserURL: "https://testnet.iopn.tech",
+        },
+      },
+    ],
+  },
+  sourcify: {
+    enabled: false,
+  },
 };
 
 export default config;

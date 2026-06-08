@@ -45,6 +45,15 @@ Run live verification of all deployed contracts:
 npx hardhat run scripts/verify-live.ts --network opnTestnet
 ```
 
+### Source verification (Blockscout)
+
+All 13 contracts are **source-verified** on the OPN testnet explorer at
+https://testnet.iopn.tech (see `../VERIFIED_CONTRACTS.md` for direct links).
+
+```bash
+npx hardhat verify --network opnTestnet <address> [args...]
+```
+
 ## Setup
 
 ```bash

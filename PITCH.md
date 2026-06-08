@@ -45,6 +45,7 @@ Barkpad is **reusable infrastructure** that turns "launch a meme" into a safe, o
 Everything below is **deployed and live-verified on OPN testnet with our own wallet**:
 
 - **12 smart contracts**, 72/72 automated tests passing (unit + integration + invariant).
+- **All contracts source-verified** on the OPN testnet Blockscout explorer (https://testnet.iopn.tech).
 - **End-to-end verified on-chain:** create → buy → sell → graduate (LP locked) → swap → stake → airdrop → quest claim → presale buy. All passing.
 - **Web app** (Next.js + wagmi + RainbowKit): launch wizard, explore, token trade page, presale, staking, quests — cute meme UX.
 - **Flagship token:** DogOn ($DOGON), fixed-supply burnable, funding presale + staking + quest rewards.

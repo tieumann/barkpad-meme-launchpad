@@ -11,6 +11,7 @@
 - [x] Pitch document (`PITCH.md`)
 - [x] Demo script (`DEMO.md`)
 - [x] On-chain indexer + real leaderboard
+- [x] All 13 contracts source-verified on the OPN testnet explorer
 
 ## Before you hit "submit"
 
@@ -44,6 +45,6 @@ See `contracts/deployments/opnTestnet.json`. Key ones:
 - IOPn Identity uses a signature-based attestation adapter; the official on-chain
   attestation interface gets wired in once available.
 - AI meme generation is in the pitch/roadmap (uses subsidized GPU) — not yet built.
-- Contract source verification on the explorer is pending OPN's explorer launch
-  ("coming soon"); functional verification is done via `check-all.ts`.
-- Not yet audited / not on mainnet — planned with programme support.
+- **Not yet audited / not on mainnet** — planned with programme support.
+- All 13 contracts are **source-verified** on the OPN testnet Blockscout explorer
+  (https://testnet.iopn.tech) — see `VERIFIED_CONTRACTS.md`.
