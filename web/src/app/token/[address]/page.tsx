@@ -9,6 +9,7 @@ import { ADDRESSES } from "@/lib/addresses";
 import { NetworkGuard } from "@/components/NetworkGuard";
 import { TxStatus, CuteSpinner } from "@/components/TxButton";
 import { CreatorBadge } from "@/components/CreatorBadge";
+import { SwapBox } from "@/components/SwapBox";
 
 export default function TokenPage() {
   const params = useParams();
@@ -174,7 +175,10 @@ export default function TokenPage() {
           )}
         </div>
 
-        {/* Trade box */}
+        {/* Trade box: curve trading while live, DEX swap after graduation */}
+        {status === 2 && pool && pool !== "0x0000000000000000000000000000000000000000" ? (
+          <SwapBox pool={pool} token={token} symbol={symbol ?? "TOKEN"} />
+        ) : (
         <div className="card-cute p-6">
           <div className="mb-4 flex rounded-full border-4 border-bark-ink/10 bg-white p-1">
             <button
@@ -202,7 +206,7 @@ export default function TokenPage() {
 
           {status !== 0 ? (
             <p className="mt-4 rounded-2xl bg-bark-peach/60 px-3 py-2 font-semibold">
-              🐾 Curve trading is closed (token has graduated). Use the DEX pool to swap.
+              🐾 Curve is graduating… finalize it above to open the DEX pool.
             </p>
           ) : tab === "buy" ? (
             <button className="btn-pop mt-4 w-full bg-bark-mint text-bark-ink" onClick={buy} disabled={isPending}>
@@ -225,6 +229,7 @@ export default function TokenPage() {
             Fair bonding-curve pricing · 1% trading fee · slippage-safe
           </p>
         </div>
+        )}
       </div>
 
       {/* Creator reputation */}

@@ -336,3 +336,25 @@ export const stakingAbi = [
     outputs: [{ name: "", type: "address" }],
   },
 ] as const;
+
+export const ammPairAbi = [
+  {
+    type: "function",
+    name: "swapOPNForToken",
+    stateMutability: "payable",
+    inputs: [{ name: "minOut", type: "uint256" }],
+    outputs: [{ name: "out", type: "uint256" }],
+  },
+  {
+    type: "function",
+    name: "swapTokenForOPN",
+    stateMutability: "nonpayable",
+    inputs: [
+      { name: "amountIn", type: "uint256" },
+      { name: "minOut", type: "uint256" },
+    ],
+    outputs: [{ name: "out", type: "uint256" }],
+  },
+  { type: "function", name: "reserveToken", stateMutability: "view", inputs: [], outputs: [{ type: "uint256" }] },
+  { type: "function", name: "reserveOPN", stateMutability: "view", inputs: [], outputs: [{ type: "uint256" }] },
+] as const;
